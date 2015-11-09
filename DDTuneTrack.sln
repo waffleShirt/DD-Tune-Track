@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDTuneTrack", "DDTuneTrack\DDTuneTrack.csproj", "{B185C02F-F37E-46F7-83EC-7D3FCD4C7556}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B185C02F-F37E-46F7-83EC-7D3FCD4C7556}.Debug|x86.ActiveCfg = Debug|x86
+		{B185C02F-F37E-46F7-83EC-7D3FCD4C7556}.Debug|x86.Build.0 = Debug|x86
+		{B185C02F-F37E-46F7-83EC-7D3FCD4C7556}.Release|x86.ActiveCfg = Release|x86
+		{B185C02F-F37E-46F7-83EC-7D3FCD4C7556}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
