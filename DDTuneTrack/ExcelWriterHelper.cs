@@ -45,6 +45,7 @@ namespace DDTuneTrack
             }
             catch (Exception e)
             {
+                MessageBox.Show(e.Message); 
                 Console.WriteLine(e.Message); 
             }
         }
