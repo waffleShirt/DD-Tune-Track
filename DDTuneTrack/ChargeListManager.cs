@@ -158,7 +158,7 @@ namespace DDTuneTrack
                             notes.Add(line); 
                         }
 
-                        ChargeList cl = new ChargeList(date, charged, tuneRecords);
+                        ChargeList cl = new ChargeList(date, charged, tuneRecords, notes);
                         ChargeListManager.GetInstance().AddNewChargeList(cl); 
                     }
                 }

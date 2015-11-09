@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.txtNotes = new System.Windows.Forms.TextBox();
+            this.lblNotes = new System.Windows.Forms.Label();
             this.btnSuppressDing = new System.Windows.Forms.Button();
             this.lblStaffError = new System.Windows.Forms.Label();
             this.lblTuneDateError = new System.Windows.Forms.Label();
@@ -50,15 +52,14 @@
             this.lblTuneType = new System.Windows.Forms.Label();
             this.lblAssetNumber = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btnNextDay = new System.Windows.Forms.Button();
-            this.btnPrevDay = new System.Windows.Forms.Button();
+            this.btnGoToToday = new System.Windows.Forms.Button();
+            this.btnGoToNextDay = new System.Windows.Forms.Button();
+            this.btnGoToPrevDay = new System.Windows.Forms.Button();
             this.dtpChargeListDate = new System.Windows.Forms.DateTimePicker();
             this.lblChargeListDate = new System.Windows.Forms.Label();
             this.lblChargeStatus = new System.Windows.Forms.Label();
             this.btnToggleCharged = new System.Windows.Forms.Button();
             this.txtChargeList = new System.Windows.Forms.TextBox();
-            this.lblNotes = new System.Windows.Forms.Label();
-            this.txtNotes = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
@@ -106,6 +107,24 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Ski/Board Tune Entry";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // txtNotes
+            // 
+            this.txtNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNotes.Location = new System.Drawing.Point(163, 198);
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.Size = new System.Drawing.Size(310, 31);
+            this.txtNotes.TabIndex = 22;
+            // 
+            // lblNotes
+            // 
+            this.lblNotes.AutoSize = true;
+            this.lblNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNotes.Location = new System.Drawing.Point(3, 204);
+            this.lblNotes.Name = "lblNotes";
+            this.lblNotes.Size = new System.Drawing.Size(124, 25);
+            this.lblNotes.TabIndex = 21;
+            this.lblNotes.Text = "Notes/Parts";
             // 
             // btnSuppressDing
             // 
@@ -303,8 +322,9 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.btnNextDay);
-            this.tabPage2.Controls.Add(this.btnPrevDay);
+            this.tabPage2.Controls.Add(this.btnGoToToday);
+            this.tabPage2.Controls.Add(this.btnGoToNextDay);
+            this.tabPage2.Controls.Add(this.btnGoToPrevDay);
             this.tabPage2.Controls.Add(this.dtpChargeListDate);
             this.tabPage2.Controls.Add(this.lblChargeListDate);
             this.tabPage2.Controls.Add(this.lblChargeStatus);
@@ -313,32 +333,43 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(656, 528);
+            this.tabPage2.Size = new System.Drawing.Size(746, 528);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Tune Charge Lists";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // btnNextDay
+            // btnGoToToday
             // 
-            this.btnNextDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNextDay.Location = new System.Drawing.Point(522, 13);
-            this.btnNextDay.Name = "btnNextDay";
-            this.btnNextDay.Size = new System.Drawing.Size(128, 31);
-            this.btnNextDay.TabIndex = 6;
-            this.btnNextDay.Text = "Next Day";
-            this.btnNextDay.UseVisualStyleBackColor = true;
-            this.btnNextDay.Click += new System.EventHandler(this.btnNextDay_Click);
+            this.btnGoToToday.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGoToToday.Location = new System.Drawing.Point(479, 12);
+            this.btnGoToToday.Name = "btnGoToToday";
+            this.btnGoToToday.Size = new System.Drawing.Size(127, 31);
+            this.btnGoToToday.TabIndex = 7;
+            this.btnGoToToday.Text = "Today";
+            this.btnGoToToday.UseVisualStyleBackColor = true;
+            this.btnGoToToday.Click += new System.EventHandler(this.btnGoToToday_Click);
             // 
-            // btnPrevDay
+            // btnGoToNextDay
             // 
-            this.btnPrevDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrevDay.Location = new System.Drawing.Point(351, 14);
-            this.btnPrevDay.Name = "btnPrevDay";
-            this.btnPrevDay.Size = new System.Drawing.Size(165, 31);
-            this.btnPrevDay.TabIndex = 5;
-            this.btnPrevDay.Text = "Previous Day";
-            this.btnPrevDay.UseVisualStyleBackColor = true;
-            this.btnPrevDay.Click += new System.EventHandler(this.btnPrevDay_Click);
+            this.btnGoToNextDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGoToNextDay.Location = new System.Drawing.Point(612, 13);
+            this.btnGoToNextDay.Name = "btnGoToNextDay";
+            this.btnGoToNextDay.Size = new System.Drawing.Size(128, 31);
+            this.btnGoToNextDay.TabIndex = 6;
+            this.btnGoToNextDay.Text = "Next Day";
+            this.btnGoToNextDay.UseVisualStyleBackColor = true;
+            this.btnGoToNextDay.Click += new System.EventHandler(this.btnNextDay_Click);
+            // 
+            // btnGoToPrevDay
+            // 
+            this.btnGoToPrevDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGoToPrevDay.Location = new System.Drawing.Point(308, 12);
+            this.btnGoToPrevDay.Name = "btnGoToPrevDay";
+            this.btnGoToPrevDay.Size = new System.Drawing.Size(165, 31);
+            this.btnGoToPrevDay.TabIndex = 5;
+            this.btnGoToPrevDay.Text = "Previous Day";
+            this.btnGoToPrevDay.UseVisualStyleBackColor = true;
+            this.btnGoToPrevDay.Click += new System.EventHandler(this.btnPrevDay_Click);
             // 
             // dtpChargeListDate
             // 
@@ -377,9 +408,9 @@
             // btnToggleCharged
             // 
             this.btnToggleCharged.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnToggleCharged.Location = new System.Drawing.Point(437, 485);
+            this.btnToggleCharged.Location = new System.Drawing.Point(479, 485);
             this.btnToggleCharged.Name = "btnToggleCharged";
-            this.btnToggleCharged.Size = new System.Drawing.Size(213, 37);
+            this.btnToggleCharged.Size = new System.Drawing.Size(261, 37);
             this.btnToggleCharged.TabIndex = 1;
             this.btnToggleCharged.Text = "Mark As Charged";
             this.btnToggleCharged.UseVisualStyleBackColor = true;
@@ -392,26 +423,8 @@
             this.txtChargeList.Multiline = true;
             this.txtChargeList.Name = "txtChargeList";
             this.txtChargeList.ReadOnly = true;
-            this.txtChargeList.Size = new System.Drawing.Size(647, 429);
+            this.txtChargeList.Size = new System.Drawing.Size(737, 429);
             this.txtChargeList.TabIndex = 0;
-            // 
-            // lblNotes
-            // 
-            this.lblNotes.AutoSize = true;
-            this.lblNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNotes.Location = new System.Drawing.Point(3, 204);
-            this.lblNotes.Name = "lblNotes";
-            this.lblNotes.Size = new System.Drawing.Size(124, 25);
-            this.lblNotes.TabIndex = 21;
-            this.lblNotes.Text = "Notes/Parts";
-            // 
-            // txtNotes
-            // 
-            this.txtNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNotes.Location = new System.Drawing.Point(163, 198);
-            this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(310, 31);
-            this.txtNotes.TabIndex = 22;
             // 
             // DDTuneTrackForm
             // 
@@ -422,6 +435,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "DDTuneTrackForm";
             this.Text = "Double Diamond Tune Tracker - Winter 2015/2016";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DDTuneTrackForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DDTuneTrackForm_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -455,8 +469,8 @@
         private System.Windows.Forms.Label lblChargeStatus;
         private System.Windows.Forms.Button btnToggleCharged;
         private System.Windows.Forms.TextBox txtChargeList;
-        private System.Windows.Forms.Button btnNextDay;
-        private System.Windows.Forms.Button btnPrevDay;
+        private System.Windows.Forms.Button btnGoToNextDay;
+        private System.Windows.Forms.Button btnGoToPrevDay;
         private System.Windows.Forms.DateTimePicker dtpChargeListDate;
         private System.Windows.Forms.Label lblChargeListDate;
         private System.Windows.Forms.Label lblStaffError;
@@ -466,6 +480,7 @@
         private System.Windows.Forms.Button btnSuppressDing;
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.Label lblNotes;
+        private System.Windows.Forms.Button btnGoToToday;
     }
 }
 

@@ -22,7 +22,15 @@ namespace DDTuneTrack
     {
         private TuneList mTuneList;
         private ChargeList mChargeList; 
-        private Mode mMode = Mode.Mode_NewTune; 
+        private Mode mMode = Mode.Mode_NewTune;
+ 
+        // Strings for dialog boxes
+        private string mSubmitDialogTitle = "Submit all tunes?";
+        private string mSubmitDialogDetail = "Are you sure you want to save all the current items in the tune list to file?";
+        private string mSubmitDialogNoTunesTitle = "No Tunes To Submit"; 
+        private string mSubmitDialogNoTunesDetail = "There are no tunes to submit";
+        private string mCloseDialogTitle = "Closing";
+        private string mCloseDialogDetail = "Are you sure you want to close? Any unsaved tunes will be automatically saved."; 
 
         public DDTuneTrackForm()
         {
@@ -44,6 +52,9 @@ namespace DDTuneTrack
             dtpChargeListDate.Value = DateTime.Now; 
 
             UpdateEntryDate(); 
+
+            // Ensure the charged button in the charge list tab has the right text
+            SetChargedButtonState(); 
         }
 
         private void btnClearRemove_Click(object sender, EventArgs e)
@@ -80,7 +91,22 @@ namespace DDTuneTrack
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            SubmitTuneList(); 
+            if (mTuneList.GetNumRows() == 0)
+            {
+                DialogResult dialogResult = MessageBox.Show(mSubmitDialogNoTunesDetail, mSubmitDialogNoTunesTitle, MessageBoxButtons.OK);
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show(mSubmitDialogDetail, mSubmitDialogTitle, MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    SubmitTuneList();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    // Do nothing
+                }
+            } 
         }
 
         private void btnPrevDay_Click(object sender, EventArgs e)
@@ -90,13 +116,13 @@ namespace DDTuneTrack
                 dtpChargeListDate.Value = dtpChargeListDate.Value.AddDays(-1);
 
                 // In case next day button has been disabled
-                btnNextDay.Enabled = true; 
+                btnGoToNextDay.Enabled = true; 
             }
 
             // If we're now at the minimum date for the picker disable the prevDay button
             if (dtpChargeListDate.Value == dtpChargeListDate.MinDate)
             {
-                btnPrevDay.Enabled = false; 
+                btnGoToPrevDay.Enabled = false; 
             }
 
             DisplayChargeListForCurrentDate();
@@ -106,7 +132,8 @@ namespace DDTuneTrack
         {
             // Display the charge list data for the current date in the text box
             txtChargeList.Text = ChargeListManager.GetInstance().GetChargeListTextForDate(dtpChargeListDate.Value);
-            SetChargedLabelState(ChargeListManager.GetInstance().GetChargedListChargedStatusForDate(dtpChargeListDate.Value));
+            SetChargedLabelState();
+            SetChargedButtonState(); 
         }
 
         private void btnNextDay_Click(object sender, EventArgs e)
@@ -116,13 +143,13 @@ namespace DDTuneTrack
                 dtpChargeListDate.Value = dtpChargeListDate.Value.AddDays(1);
                 
                 // In case prev day button had been disabled
-                btnPrevDay.Enabled = true; 
+                btnGoToPrevDay.Enabled = true; 
             }
 
                 // If we're now at the maximum date for the picker disable the prevDay button
             if (dtpChargeListDate.Value == dtpChargeListDate.MaxDate)
             {
-                btnNextDay.Enabled = false; 
+                btnGoToNextDay.Enabled = false; 
             }
 
             DisplayChargeListForCurrentDate(); 
@@ -132,14 +159,14 @@ namespace DDTuneTrack
         {
             if (dtpChargeListDate.Value == dtpChargeListDate.MinDate)
             {
-                btnPrevDay.Enabled = false;
-                btnNextDay.Enabled = true;
+                btnGoToPrevDay.Enabled = false;
+                btnGoToNextDay.Enabled = true;
             }
 
             if (dtpChargeListDate.Value == dtpChargeListDate.MaxDate)
             {
-                btnNextDay.Enabled = false;
-                btnPrevDay.Enabled = true;
+                btnGoToNextDay.Enabled = false;
+                btnGoToPrevDay.Enabled = true;
             }
 
             DisplayChargeListForCurrentDate(); 
@@ -148,7 +175,8 @@ namespace DDTuneTrack
         private void btnToggleCharged_Click(object sender, EventArgs e)
         {
             ChargeListManager.GetInstance().ToggleChargedStatusForDate(dtpChargeListDate.Value);
-            SetChargedLabelState(ChargeListManager.GetInstance().GetChargedListChargedStatusForDate(dtpChargeListDate.Value)); 
+            SetChargedLabelState();
+            SetChargedButtonState(); 
         }
 
         private void ClearPressed()
@@ -364,8 +392,10 @@ namespace DDTuneTrack
             }
         }
 
-        private void SetChargedLabelState(bool charged)
+        private void SetChargedLabelState()
         {
+            bool charged = ChargeListManager.GetInstance().GetChargedListChargedStatusForDate(dtpChargeListDate.Value);
+
             if (charged)
             {
                 lblChargeStatus.Text = "✓ Charged";
@@ -378,9 +408,52 @@ namespace DDTuneTrack
             }
         }
 
+        private void SetChargedButtonState()
+        {
+            bool charged = ChargeListManager.GetInstance().GetChargedListChargedStatusForDate(dtpChargeListDate.Value); 
+
+            if (charged)
+            {
+                btnToggleCharged.Text = "Mark As Not Charged"; 
+            }
+            else
+            {
+                btnToggleCharged.Text = "Mark As Charged"; 
+            }
+        }
+
         private void DDTuneTrackForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ChargeListManager.GetInstance().WriteChargeListsToDisk(); 
+            
+        }
+
+        private void btnGoToToday_Click(object sender, EventArgs e)
+        {
+            dtpChargeListDate.Value = DateTime.Now;
+            DisplayChargeListForCurrentDate(); 
+        }
+
+        private void DDTuneTrackForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.Cancel == true)
+            {
+                // User didn't want to close, we don't have to do anything more. 
+                return; 
+            }
+
+            DialogResult dialogResult = MessageBox.Show(mCloseDialogDetail, mCloseDialogTitle, MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                // Submit any remaining tunes and then write out charge list to disk
+                SubmitTuneList();
+                ChargeListManager.GetInstance().WriteChargeListsToDisk();
+            }
+            else
+            {
+                // Do nothing
+                e.Cancel = true;
+                base.OnFormClosing(e);
+            }
         }
     }
 }
