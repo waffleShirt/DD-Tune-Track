@@ -11,6 +11,13 @@ using System.IO;
 
 namespace DDTuneTrack
 {
+    /* Operating mode enum.
+     * The program can operate in either New Tune mode,
+     * when a new tune's details are being entered, or in
+     * Update Tune mode, where a tune has been selected
+     * from the DataGridView and may have it's details
+     * updated or completely removed from the grid. 
+     */ 
     enum Mode
     {
         Mode_NewTune,
@@ -21,8 +28,8 @@ namespace DDTuneTrack
     public partial class DDTuneTrackForm : Form
     {
         private TuneList mTuneList;
-        private ChargeList mChargeList; 
         private Mode mMode = Mode.Mode_NewTune;
+        private DateTime mToday = DateTime.Now; 
  
         // Strings for dialog boxes
         private string mSubmitDialogTitle = "Submit all tunes?";
@@ -51,12 +58,24 @@ namespace DDTuneTrack
             // exists for today it will be displayed immediately in the viewer. 
             dtpChargeListDate.Value = DateTime.Now; 
 
+            // Make sure the tune entry date is set correctly
             UpdateEntryDate(); 
 
             // Ensure the charged button in the charge list tab has the right text
-            SetChargedButtonState(); 
+            UpdateChargedButtonText();
         }
 
+        //=====================================================================
+        // Button and Event Handlers
+        //=====================================================================
+
+        /// <summary>
+        /// Handles the Clear (New Tune Mode) and Remove (Update Tune Mode)
+        /// button being pressed. Redirects program flow to another function
+        /// to handle the button pressed based on the current operating mode. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnClearRemove_Click(object sender, EventArgs e)
         {
             if (mMode == Mode.Mode_NewTune)
@@ -69,6 +88,13 @@ namespace DDTuneTrack
             }
         }
 
+        /// <summary>
+        /// Handles the Save (New Tune Mode) and Update (Update Tune Mode)
+        /// button being pressed. Redirects program flow to another function
+        /// to handle the button pressed based on the current operating mode. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSaveUpdate_Click(object sender, EventArgs e)
         {
             if (mMode == Mode.Mode_NewTune)
@@ -81,6 +107,14 @@ namespace DDTuneTrack
             }
         }
 
+        /// <summary>
+        /// Handles a KeyUp event on the Asset Number Text Box. 
+        /// It will only respond to the Enter key being released.
+        /// If the Enter Key is released program flow redirects to
+        /// save the current tune details to the DataGridView.  
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtAssetNumber_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
@@ -89,6 +123,29 @@ namespace DDTuneTrack
             }
         }
 
+        /// <summary>
+        /// Handles a KeyUp event on the Notes Text Box. It will only respond 
+        /// to the Enter key being released. If the Enter Key is released 
+        /// program flow redirects to save the current tune details to the 
+        /// DataGridView.  
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtNotes_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                SavePressed();
+            }
+        }
+
+        /// <summary>
+        /// Handles the Submit button being pressed. The handler shows
+        /// a dialog box asking the user if they wish to save the current
+        /// tune list and handles the Yes/No response accordingly. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (mTuneList.GetNumRows() == 0)
@@ -109,6 +166,14 @@ namespace DDTuneTrack
             } 
         }
 
+        /// <summary>
+        /// Handles the Previous Day button being pressed in the
+        /// Charge List tab. When pressed it shows the charge list
+        /// from the previous day, so long as the minimum date 
+        /// value for Charge Lists isn't already being displayed. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPrevDay_Click(object sender, EventArgs e)
         {
             if (dtpChargeListDate.Value != dtpChargeListDate.MinDate)
@@ -128,14 +193,21 @@ namespace DDTuneTrack
             DisplayChargeListForCurrentDate();
         }
 
-        private void DisplayChargeListForCurrentDate()
+        /// <summary>
+        /// Sets the date in the Charge List date picker to the current date. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGoToToday_Click(object sender, EventArgs e)
         {
-            // Display the charge list data for the current date in the text box
-            txtChargeList.Text = ChargeListManager.GetInstance().GetChargeListTextForDate(dtpChargeListDate.Value);
-            SetChargedLabelState();
-            SetChargedButtonState(); 
+            dtpChargeListDate.Value = DateTime.Now;
+            DisplayChargeListForCurrentDate();
         }
 
+        /// Handles the Next Day button being pressed in the
+        /// Charge List tab. When pressed it shows the charge list
+        /// from the next day, so long as the maximum date 
+        /// value for Charge Lists isn't already being displayed. 
         private void btnNextDay_Click(object sender, EventArgs e)
         {
             if (dtpChargeListDate.Value != dtpChargeListDate.MaxDate)
@@ -155,6 +227,13 @@ namespace DDTuneTrack
             DisplayChargeListForCurrentDate(); 
         }
 
+        /// <summary>
+        /// Handles the Charge List Date pickers date being changed. 
+        /// The previous and next day buttons are enabled and disabled
+        /// depending on the date selected. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dtpChargeListDate_ValueChanged(object sender, EventArgs e)
         {
             if (dtpChargeListDate.Value == dtpChargeListDate.MinDate)
@@ -172,19 +251,172 @@ namespace DDTuneTrack
             DisplayChargeListForCurrentDate(); 
         }
 
+        /// <summary>
+        /// Handles the Mark as Charged (for an uncharged list) or the
+        /// Mark as Uncharged (for a charged list) button being pressed. 
+        /// The text on the button is toggled depending on the updated
+        /// charge status for a charge list after the button is pressed. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnToggleCharged_Click(object sender, EventArgs e)
         {
             ChargeListManager.GetInstance().ToggleChargedStatusForDate(dtpChargeListDate.Value);
-            SetChargedLabelState();
-            SetChargedButtonState(); 
+            UpdateChargedLabelText();
+            UpdateChargedButtonText(); 
         }
 
+        /// <summary>
+        /// Handles a row in the Tune List DataGridView being selected. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgv_SelectionChanged(object sender, EventArgs e)
+        {
+            OnTuneListRowSelectionChanged();
+        }
+
+        /// <summary>
+        /// Handles the FormClosing event raised when the user tries to close
+        /// the program. A DialogBox is shown asking the user if they are sure
+        /// they want to quit. Selecting Yes will save all the unsaved data. 
+        /// Selecting no will cancel the FormClosing event and nothing further
+        /// happens. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DDTuneTrackForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.Cancel == true)
+            {
+                // User didn't want to close, we don't have to do anything more. 
+                return;
+            }
+
+            DialogResult dialogResult = MessageBox.Show(mCloseDialogDetail, mCloseDialogTitle, MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                // Submit any remaining tunes and then write out charge list to disk
+                SubmitTuneList();
+                ChargeListManager.GetInstance().WriteChargeListsToDisk();
+            }
+            else
+            {
+                // Do nothing
+                e.Cancel = true;
+                base.OnFormClosing(e);
+            }
+        }
+
+        /// <summary>
+        /// Handles a MouseUp event on the Tune List DataGridView. Only handles
+        /// the left mouse button going up. If the button goes up and the mouse
+        /// was not over one of the current rows in the DataGridView then all
+        /// selected rows in the DataGridView are unselected. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgv_MouseUp(object sender, MouseEventArgs e)
+        {
+            // Test if user clicked away from all the rows within the DataGridView. 
+            // If they did, then unselect anys elected row. 
+            if (e.Button == MouseButtons.Left)
+            {
+                if (dgv.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.None)
+                {
+                    ClearDGVSelection();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles a MouseUp event on the main form. Only handles the left 
+        /// mouse button going up If the mouse button goes up any selected rows
+        /// in the TuneList DataGridView are unselected. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DDTuneTrackForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            // Test if user clicked on the form while an item was selected in the DGV. 
+            // If one was, clear the selection
+            if (e.Button == MouseButtons.Left)
+            {
+                if (mMode == Mode.Mode_UpdateTune)
+                {
+                    ClearDGVSelection();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles a MouseUp event on the Tune Entry tab. Only handles the 
+        /// left mouse button going up If the mouse button goes up any selected 
+        /// rows in the TuneList DataGridView are unselected. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tabPage1_MouseUp(object sender, MouseEventArgs e)
+        {
+            // Test if user clicked on the tabPage while an item was selected in the DGV. 
+            // If one was, clear the selection
+            if (e.Button == MouseButtons.Left)
+            {
+                if (mMode == Mode.Mode_UpdateTune)
+                {
+                    ClearDGVSelection();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the periodic tick of the program timer. When it ticks the
+        /// current date and the last saved date are checked. If the new date
+        /// is greater than the current date we know it has passed midnight. If
+        /// any unsaved data is in the Tune List DataGridView the data is saved
+        /// and the dates in the date pickers updated to the new day. This 
+        /// means the program is ready for a new day and no data is lost. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("Timer Ticked");
+            if (DateTime.Now.Date.CompareTo(mToday.Date) > 0)
+            {
+                Console.WriteLine("Date Changed!");
+                mToday = DateTime.Now;
+
+                // Save out the current tune list
+                // Note that as it has passed midnight we want the charge list to be YESTERDAYS date
+                SubmitTuneList(DateTime.Now.AddDays(-1));
+
+                // Update date objects
+                UpdateEntryDate();
+                dtpChargeListDate.Value = DateTime.Now;
+                dtpTuneDate.Value = DateTime.Now;
+            }
+        }
+
+        //=====================================================================
+        // Regular Methods
+        //=====================================================================
+
+        /// <summary>
+        /// Clears all of the data currently in the input controls and resets
+        /// any with default data back to the default state. Validation labels
+        /// are also hidden. 
+        /// </summary>
         private void ClearPressed()
         {
             ClearInputData();
             HideValidationLabels();
         }
 
+        /// <summary>
+        /// Removes en existing tune selected in the DataGridView, clears all
+        /// input data and resets the program back to New Tune mode. 
+        /// </summary>
         private void RemovePressed()
         {
             mTuneList.RemoveExistingTune(); 
@@ -196,6 +428,10 @@ namespace DDTuneTrack
             EnableNewTuneMode(); 
         }
 
+        /// <summary>
+        /// Makes a call to validate input data and if all input data is valid 
+        /// saves the tune data to the DataGridView. 
+        /// </summary>
         private void SavePressed()
         {
             if (ValidateInput())
@@ -210,6 +446,22 @@ namespace DDTuneTrack
             }
         }
 
+        /// <summary>
+        /// Displays the Charge List for the current date in the Charge List 
+        /// date picker. 
+        /// </summary>
+        private void DisplayChargeListForCurrentDate()
+        {
+            // Display the charge list data for the current date in the text box
+            txtChargeList.Text = ChargeListManager.GetInstance().GetChargeListTextForDate(dtpChargeListDate.Value);
+            UpdateChargedLabelText();
+            UpdateChargedButtonText();
+        }
+
+        /// <summary>
+        /// Updates the current tune selected in the DataGridView using the 
+        /// current input data. 
+        /// </summary>
         private void UpdatePressed()
         {
             if (ValidateInput())
@@ -234,9 +486,14 @@ namespace DDTuneTrack
         /// </summary>
         private void ClearInputOnSaveOrUpdate()
         {
-            txtAssetNumber.Text = string.Empty; 
+            txtAssetNumber.Text = string.Empty;
+            txtNotes.Text = string.Empty; 
         }
 
+        /// <summary>
+        /// Updates the text in the Tune Entry Date text box to the current
+        /// date. 
+        /// </summary>
         private void UpdateEntryDate()
         {
             txtEntryDate.Text = DateTime.Now.ToShortDateString(); 
@@ -253,9 +510,13 @@ namespace DDTuneTrack
             cmbTuneType.SelectedIndex = -1;
             dtpTuneDate.Value = DateTime.Now;
             UpdateEntryDate();
-            cmbStaff.SelectedIndex = -1; 
+            cmbStaff.SelectedIndex = -1;
+            txtNotes.Text = string.Empty; 
         }
 
+        /// <summary>
+        /// Hides all validation labels. 
+        /// </summary>
         private void HideValidationLabels()
         {
             lblAssetNumberError.Visible = false;
@@ -311,11 +572,6 @@ namespace DDTuneTrack
             }
         }
 
-        private void dgv_SelectionChanged(object sender, EventArgs e)
-        {
-            OnTuneListRowSelectionChanged();
-        }
-
         /// <summary>
         /// Sets the program to operate in Tune Update Mode. 
         /// In this mode an existing tune selected in the tune list
@@ -340,6 +596,12 @@ namespace DDTuneTrack
             btnSaveUpdate.Text = "Save";
         }
 
+        /// <summary>
+        /// Runs the logic for the selected row in the Tune List being 
+        /// changed. When the row is changed Update Mode is enabled and the 
+        /// data from the selected row is loaded into the data input 
+        /// controls. 
+        /// </summary>
         public void OnTuneListRowSelectionChanged()
         {
             // Get the row. If we don't receive a row we can't do anything
@@ -355,23 +617,60 @@ namespace DDTuneTrack
                 cmbTuneType.SelectedIndex = cmbTuneType.FindStringExact(row.Cells["colTuneType"].Value.ToString());
                 dtpTuneDate.Value = DateTime.ParseExact(row.Cells["colTuneDate"].Value.ToString(), "d/MM/yyyy", null);
                 cmbStaff.SelectedIndex = cmbStaff.FindStringExact(row.Cells["colStaff"].Value.ToString());
+                txtNotes.Text = row.Cells["colNotes"].Value.ToString(); 
             }
         }
 
+        /// <summary>
+        /// Submits the current tune list to be written to the storgage Excel
+        /// spreadsheet and the corresponding Charge List to be generated. 
+        /// </summary>
         private void SubmitTuneList()
+        {
+            // Write Tunes to File
+            mTuneList.WriteTuneListToFile();
+
+            // Add the new charge list
+            ChargeListManager.GetInstance().AddNewChargeList(ChargeListManager.GetInstance().BuildChargeList(mTuneList));
+
+            // Charge list is built. Destroy the DataGridView and clear all data
+            ClearInputData();
+
+            mTuneList.ClearAllData();
+
+            dtpChargeListDate.Value = DateTime.Now; 
+        }
+
+        /// <summary>
+        /// Submits the current tune list to be written to the storgage Excel
+        /// spreadsheet and the corresponding Charge List to be generated. The
+        /// date of the tune list can be set. This is primarily used when the
+        /// tune list is automatically saved after midnight and needs the date
+        /// set to the previous days date. 
+        /// </summary>
+        /// <param name="date">Charge List date</param>
+        private void SubmitTuneList(DateTime date)
         {
             // Write Tunes to File
             mTuneList.WriteTuneListToFile(); 
             
             // Add the new charge list
-            ChargeListManager.GetInstance().AddNewChargeList(mTuneList.BuildChargeList());
+            ChargeListManager.GetInstance().AddNewChargeList(ChargeListManager.GetInstance().BuildChargeList(mTuneList, date));
 
             // Charge list is built. Destroy the DataGridView and clear all data
             ClearInputData();
 
-            mTuneList.ClearAllData(); 
+            mTuneList.ClearAllData();
+
+            DisplayChargeListForCurrentDate();
+
+            dtpChargeListDate.Value = DateTime.Now; 
         }
 
+        /// <summary>
+        /// Loads the staff list from file and updates the values in the staff
+        /// ComboBox. 
+        /// </summary>
         private void LoadStaffList()
         {
             try
@@ -392,7 +691,12 @@ namespace DDTuneTrack
             }
         }
 
-        private void SetChargedLabelState()
+        /// <summary>
+        /// Sets the text of the Charged label in the Charge List tab. The 
+        /// label text is set based on the charged state of the current charge
+        /// list. 
+        /// </summary>
+        private void UpdateChargedLabelText()
         {
             bool charged = ChargeListManager.GetInstance().GetChargedListChargedStatusForDate(dtpChargeListDate.Value);
 
@@ -408,7 +712,12 @@ namespace DDTuneTrack
             }
         }
 
-        private void SetChargedButtonState()
+        /// <summary>
+        /// Sets the text of the Charged button in the Charge List tab. The 
+        /// button text is set based on the charged state of the current charge
+        /// list. 
+        /// </summary>
+        private void UpdateChargedButtonText()
         {
             bool charged = ChargeListManager.GetInstance().GetChargedListChargedStatusForDate(dtpChargeListDate.Value); 
 
@@ -422,38 +731,14 @@ namespace DDTuneTrack
             }
         }
 
-        private void DDTuneTrackForm_FormClosed(object sender, FormClosedEventArgs e)
+        /// <summary>
+        /// Unselects all selected rows in the TuneList DataGridView. 
+        /// </summary>
+        private void ClearDGVSelection()
         {
-            
-        }
-
-        private void btnGoToToday_Click(object sender, EventArgs e)
-        {
-            dtpChargeListDate.Value = DateTime.Now;
-            DisplayChargeListForCurrentDate(); 
-        }
-
-        private void DDTuneTrackForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.Cancel == true)
-            {
-                // User didn't want to close, we don't have to do anything more. 
-                return; 
-            }
-
-            DialogResult dialogResult = MessageBox.Show(mCloseDialogDetail, mCloseDialogTitle, MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
-            {
-                // Submit any remaining tunes and then write out charge list to disk
-                SubmitTuneList();
-                ChargeListManager.GetInstance().WriteChargeListsToDisk();
-            }
-            else
-            {
-                // Do nothing
-                e.Cancel = true;
-                base.OnFormClosing(e);
-            }
+            dgv.ClearSelection();
+            ClearInputData();
+            EnableNewTuneMode();
         }
     }
 }

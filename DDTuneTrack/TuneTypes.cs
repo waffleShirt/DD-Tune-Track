@@ -8,16 +8,20 @@ using System.Windows.Forms;
 
 namespace DDTuneTrack
 {
-    /******************************************************
-    * Class: Tune Types
-    * Author: Tom Burridge
-    * Date: 5/11/2015
-    */
-
+    /// <summary>
+    /// Author: Tom Burridge
+    /// Loads the tune types file and populates the tune types ComboBox in the
+    /// main form. 
+    /// </summary>
     public class TuneTypes
     {
         public static List<string> TuneTypesList = new List<string>();
 
+        /// <summary>
+        /// Loads the tune types file and populates a ComboBox with the loaded
+        /// values. 
+        /// </summary>
+        /// <param name="tuneTypesComboBox">ComboBox to populate with loaded values.</param>
         public static void LoadTuneTypesList(ComboBox tuneTypesComboBox)
         {
             try

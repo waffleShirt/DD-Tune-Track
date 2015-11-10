@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DDTuneTrackForm));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -61,6 +62,7 @@
             this.lblChargeStatus = new System.Windows.Forms.Label();
             this.btnToggleCharged = new System.Windows.Forms.Button();
             this.txtChargeList = new System.Windows.Forms.TextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
@@ -108,6 +110,7 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Ski/Board Tune Entry";
             this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabPage1_MouseUp);
             // 
             // txtNotes
             // 
@@ -115,7 +118,8 @@
             this.txtNotes.Location = new System.Drawing.Point(163, 198);
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.Size = new System.Drawing.Size(310, 31);
-            this.txtNotes.TabIndex = 22;
+            this.txtNotes.TabIndex = 6;
+            this.txtNotes.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyUp);
             // 
             // lblNotes
             // 
@@ -134,6 +138,7 @@
             this.btnSuppressDing.Name = "btnSuppressDing";
             this.btnSuppressDing.Size = new System.Drawing.Size(75, 23);
             this.btnSuppressDing.TabIndex = 20;
+            this.btnSuppressDing.TabStop = false;
             this.btnSuppressDing.Text = "button1";
             this.btnSuppressDing.UseVisualStyleBackColor = true;
             this.btnSuppressDing.Visible = false;
@@ -187,7 +192,7 @@
             this.btnSubmit.Location = new System.Drawing.Point(640, 481);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(100, 38);
-            this.btnSubmit.TabIndex = 14;
+            this.btnSubmit.TabIndex = 9;
             this.btnSubmit.Text = "Submit Tune List";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
@@ -200,14 +205,16 @@
             this.dgv.Name = "dgv";
             this.dgv.Size = new System.Drawing.Size(734, 197);
             this.dgv.TabIndex = 13;
+            this.dgv.TabStop = false;
             this.dgv.SelectionChanged += new System.EventHandler(this.dgv_SelectionChanged);
+            this.dgv.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgv_MouseUp);
             // 
             // btnSaveUpdate
             // 
             this.btnSaveUpdate.Location = new System.Drawing.Point(368, 235);
             this.btnSaveUpdate.Name = "btnSaveUpdate";
             this.btnSaveUpdate.Size = new System.Drawing.Size(105, 37);
-            this.btnSaveUpdate.TabIndex = 12;
+            this.btnSaveUpdate.TabIndex = 7;
             this.btnSaveUpdate.Text = "Save";
             this.btnSaveUpdate.UseVisualStyleBackColor = true;
             this.btnSaveUpdate.Click += new System.EventHandler(this.btnSaveUpdate_Click);
@@ -217,7 +224,7 @@
             this.btnClearRemove.Location = new System.Drawing.Point(257, 235);
             this.btnClearRemove.Name = "btnClearRemove";
             this.btnClearRemove.Size = new System.Drawing.Size(105, 37);
-            this.btnClearRemove.TabIndex = 11;
+            this.btnClearRemove.TabIndex = 8;
             this.btnClearRemove.Text = "Clear";
             this.btnClearRemove.UseVisualStyleBackColor = true;
             this.btnClearRemove.Click += new System.EventHandler(this.btnClearRemove_Click);
@@ -229,7 +236,7 @@
             this.txtEntryDate.Name = "txtEntryDate";
             this.txtEntryDate.ReadOnly = true;
             this.txtEntryDate.Size = new System.Drawing.Size(309, 31);
-            this.txtEntryDate.TabIndex = 10;
+            this.txtEntryDate.TabIndex = 4;
             // 
             // dtpTuneDate
             // 
@@ -240,7 +247,7 @@
             this.dtpTuneDate.MinDate = new System.DateTime(2015, 10, 1, 0, 0, 0, 0);
             this.dtpTuneDate.Name = "dtpTuneDate";
             this.dtpTuneDate.Size = new System.Drawing.Size(309, 31);
-            this.dtpTuneDate.TabIndex = 9;
+            this.dtpTuneDate.TabIndex = 3;
             // 
             // cmbStaff
             // 
@@ -250,7 +257,7 @@
             this.cmbStaff.Location = new System.Drawing.Point(163, 159);
             this.cmbStaff.Name = "cmbStaff";
             this.cmbStaff.Size = new System.Drawing.Size(309, 33);
-            this.cmbStaff.TabIndex = 8;
+            this.cmbStaff.TabIndex = 5;
             // 
             // cmbTuneType
             // 
@@ -260,7 +267,7 @@
             this.cmbTuneType.Location = new System.Drawing.Point(162, 46);
             this.cmbTuneType.Name = "cmbTuneType";
             this.cmbTuneType.Size = new System.Drawing.Size(310, 33);
-            this.cmbTuneType.TabIndex = 6;
+            this.cmbTuneType.TabIndex = 2;
             // 
             // txtAssetNumber
             // 
@@ -268,7 +275,7 @@
             this.txtAssetNumber.Location = new System.Drawing.Point(162, 9);
             this.txtAssetNumber.Name = "txtAssetNumber";
             this.txtAssetNumber.Size = new System.Drawing.Size(310, 31);
-            this.txtAssetNumber.TabIndex = 5;
+            this.txtAssetNumber.TabIndex = 1;
             this.txtAssetNumber.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtAssetNumber_KeyUp);
             // 
             // lblStaff
@@ -345,7 +352,7 @@
             this.btnGoToToday.Location = new System.Drawing.Point(479, 12);
             this.btnGoToToday.Name = "btnGoToToday";
             this.btnGoToToday.Size = new System.Drawing.Size(127, 31);
-            this.btnGoToToday.TabIndex = 7;
+            this.btnGoToToday.TabIndex = 3;
             this.btnGoToToday.Text = "Today";
             this.btnGoToToday.UseVisualStyleBackColor = true;
             this.btnGoToToday.Click += new System.EventHandler(this.btnGoToToday_Click);
@@ -356,7 +363,7 @@
             this.btnGoToNextDay.Location = new System.Drawing.Point(612, 13);
             this.btnGoToNextDay.Name = "btnGoToNextDay";
             this.btnGoToNextDay.Size = new System.Drawing.Size(128, 31);
-            this.btnGoToNextDay.TabIndex = 6;
+            this.btnGoToNextDay.TabIndex = 4;
             this.btnGoToNextDay.Text = "Next Day";
             this.btnGoToNextDay.UseVisualStyleBackColor = true;
             this.btnGoToNextDay.Click += new System.EventHandler(this.btnNextDay_Click);
@@ -367,7 +374,7 @@
             this.btnGoToPrevDay.Location = new System.Drawing.Point(308, 12);
             this.btnGoToPrevDay.Name = "btnGoToPrevDay";
             this.btnGoToPrevDay.Size = new System.Drawing.Size(165, 31);
-            this.btnGoToPrevDay.TabIndex = 5;
+            this.btnGoToPrevDay.TabIndex = 2;
             this.btnGoToPrevDay.Text = "Previous Day";
             this.btnGoToPrevDay.UseVisualStyleBackColor = true;
             this.btnGoToPrevDay.Click += new System.EventHandler(this.btnPrevDay_Click);
@@ -381,7 +388,7 @@
             this.dtpChargeListDate.MinDate = new System.DateTime(2015, 10, 1, 0, 0, 0, 0);
             this.dtpChargeListDate.Name = "dtpChargeListDate";
             this.dtpChargeListDate.Size = new System.Drawing.Size(200, 31);
-            this.dtpChargeListDate.TabIndex = 4;
+            this.dtpChargeListDate.TabIndex = 1;
             this.dtpChargeListDate.Value = new System.DateTime(2015, 11, 6, 0, 0, 0, 0);
             this.dtpChargeListDate.ValueChanged += new System.EventHandler(this.dtpChargeListDate_ValueChanged);
             // 
@@ -412,7 +419,7 @@
             this.btnToggleCharged.Location = new System.Drawing.Point(479, 485);
             this.btnToggleCharged.Name = "btnToggleCharged";
             this.btnToggleCharged.Size = new System.Drawing.Size(261, 37);
-            this.btnToggleCharged.TabIndex = 1;
+            this.btnToggleCharged.TabIndex = 5;
             this.btnToggleCharged.Text = "Mark As Charged";
             this.btnToggleCharged.UseVisualStyleBackColor = true;
             this.btnToggleCharged.Click += new System.EventHandler(this.btnToggleCharged_Click);
@@ -424,8 +431,17 @@
             this.txtChargeList.Multiline = true;
             this.txtChargeList.Name = "txtChargeList";
             this.txtChargeList.ReadOnly = true;
+            this.txtChargeList.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtChargeList.Size = new System.Drawing.Size(737, 429);
             this.txtChargeList.TabIndex = 0;
+            this.txtChargeList.TabStop = false;
+            this.txtChargeList.WordWrap = false;
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 6000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // DDTuneTrackForm
             // 
@@ -439,7 +455,7 @@
             this.Name = "DDTuneTrackForm";
             this.Text = "Double Diamond Tune Tracker - Winter 2015/2016";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DDTuneTrackForm_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DDTuneTrackForm_FormClosed);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DDTuneTrackForm_MouseUp);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -484,6 +500,7 @@
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.Button btnGoToToday;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

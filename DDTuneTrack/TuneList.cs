@@ -4,18 +4,17 @@ using System.Linq;
 using System.Text;
 
 using System.Windows.Forms;
-using System.Drawing; 
+using System.Drawing;
+using System.IO;
 
-/**************************************************************
- * Class: Tune List
- * Author: Tom Burridge
- * Date Created: 5/11/2015
- * Description: Implements the functionality required to 
- * initialise the DataGridView used to display tunes, as well 
- * the Add/Remove/Edit functionality for the data rows. 
- *************************************************************/
 namespace DDTuneTrack
 {
+    /// <summary>
+    /// Author: Tom Burridge
+    /// Implements the functionality required to initialise the DataGridView
+    /// used to display tunes, as well as the Add/Remove/Edit functionality 
+    /// for the data rows. 
+    /// </summary>
     class TuneList
     {
         private DDTuneTrackForm mAppForm; 
@@ -24,7 +23,13 @@ namespace DDTuneTrack
         private bool mAllowSelectionChange = false;
         private Point mLocation = new Point(6, 278);
         private System.Drawing.Size mSize = new System.Drawing.Size(734, 197); 
+        private string mWorkbookName = "DDRentalTunes2015.xlsx";
 
+        /// <summary>
+        /// TuneList Constructor. 
+        /// </summary>
+        /// <param name="appForm">Main application form</param>
+        /// <param name="dgv">DataGridView from main application form</param>
         public TuneList(DDTuneTrackForm appForm, DataGridView dgv)
         {
             mAppForm = appForm; 
@@ -33,6 +38,10 @@ namespace DDTuneTrack
             InitializeDataGridView(); 
         }
 
+        /// <summary>
+        /// Initialises the formatting and interactivity of the DataGridView
+        /// that displays the tunes. 
+        /// </summary>
         private void InitializeDataGridView()
         {
             mTuneListDGV.AllowUserToAddRows = false;
@@ -68,6 +77,9 @@ namespace DDTuneTrack
             mTuneListDGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
+        /// <summary>
+        /// Clears all data from the DataGridView. 
+        /// </summary>
         public void ClearAllData()
         {
             mTuneListDGV.Rows.Clear();
@@ -75,6 +87,10 @@ namespace DDTuneTrack
             mAllowSelectionChange = false; 
         }
 
+        /// <summary>
+        /// Adds an empty row to the DataGridView. 
+        /// </summary>
+        /// <returns></returns>
         private DataGridViewRow AddEmptyRow()
         {
             DataGridViewRow row = new DataGridViewRow();
@@ -85,24 +101,11 @@ namespace DDTuneTrack
             return row; 
         }
 
-        private void AddAColumn(int i)
-        {
-            DataGridViewTextBoxColumn Acolumn = new DataGridViewTextBoxColumn();
-            //OK I know this only works normally for 26 chars(columns)
-            // I leave the rest of the Excel columns up to you to figure out :o)
-            char ch = (char)(i + 65);
-            Acolumn.HeaderText = ch.ToString();
-            Acolumn.Name = "Column" + i.ToString();
-            Acolumn.Width = 60;
-            Acolumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            //make a Style template to be used in the grid
-            DataGridViewCell Acell = new DataGridViewTextBoxCell();
-            Acell.Style.BackColor = Color.LightCyan;
-            Acell.Style.SelectionBackColor = Color.FromArgb(128, 255, 255);
-            Acolumn.CellTemplate = Acell;
-            mTuneListDGV.Columns.Add(Acolumn);
-        }
-
+        /// <summary>
+        /// Initialises all of the columns in the DataGridView with the correct
+        /// headings. Also sets all the necessary interctivity attributes such
+        /// as ReadOnly state etc. 
+        /// </summary>
         private void InitialiseColumns()
         {
             // Asset Number Column
@@ -154,6 +157,15 @@ namespace DDTuneTrack
             mTuneListDGV.Columns.Add(notesColumn);
         }
 
+        /// <summary>
+        /// Adds a new tune to the Tune List. 
+        /// </summary>
+        /// <param name="assetNumber">Tune asset number</param>
+        /// <param name="tuneType">Tune type</param>
+        /// <param name="tuneDate">Tune date</param>
+        /// <param name="entryDate">Date tune entered into program</param>
+        /// <param name="staffMember">Tuning staff</param>
+        /// <param name="notes">Extra notes about the tune</param>
         public void AddNewTune(string assetNumber, string tuneType, string tuneDate, string entryDate, string staffMember, string notes)
         {
             DataGridViewRow row = new DataGridViewRow();
@@ -175,6 +187,15 @@ namespace DDTuneTrack
             }
         }
 
+        /// <summary>
+        /// Updates an existing tune in the Tune List. 
+        /// </summary>
+        /// <param name="assetNumber">Tune asset number</param>
+        /// <param name="tuneType">Tune type</param>
+        /// <param name="tuneDate">Tune date</param>
+        /// <param name="entryDate">Date tune entered into program</param>
+        /// <param name="staffMember">Tuning staff</param>
+        /// <param name="notes">Extra notes about the tune</param>
         public void UpdateExistingTune(string assetNumber, string tuneType, string tuneDate, string entryDate, string staffMember, string notes)
         {
             mTuneListDGV.Rows[mTuneListDGV.SelectedRows[0].Index].SetValues(assetNumber, tuneType, tuneDate, entryDate, staffMember, notes);      
@@ -183,6 +204,10 @@ namespace DDTuneTrack
             mTuneListDGV.Rows[mTuneListDGV.SelectedRows[0].Index].Selected = false; 
         }
 
+        /// <summary>
+        /// Removes an existing tune from the Tune List. The tune that will be
+        /// removed is the tune that is currently selected in the DataGridView.
+        /// </summary>
         public void RemoveExistingTune()
         {
             // Remove row
@@ -198,6 +223,10 @@ namespace DDTuneTrack
             }
         }
 
+        /// <summary>
+        /// Gets the current row selected in the DataGridView. 
+        /// </summary>
+        /// <returns>Row currently selected in DataGridView.</returns>
         public DataGridViewRow GetSelectedRow()
         {
             if (mAllowSelectionChange)
@@ -215,27 +244,34 @@ namespace DDTuneTrack
             return null; 
         }
 
+        /// <summary>
+        /// Gets the number of rows in the Tune List. 
+        /// </summary>
+        /// <returns>Number of rows in the tune list.</returns>
         public int GetNumRows()
         {
             return mNumRows;
         }
 
-        public ChargeList BuildChargeList()
+        /// <summary>
+        /// Returns all the current data rows in the Tune List
+        /// </summary>
+        /// <returns>All data rows in the Tune List</returns>
+        public DataGridViewRowCollection GetAllTuneRows()
         {
-            ChargeList cl = new ChargeList();
-
-            foreach (DataGridViewRow row in mTuneListDGV.Rows)
-            {
-                cl.AddTune(row.Cells["colTuneType"].Value.ToString(), row.Cells["colAssetNumber"].Value.ToString() + ": " + row.Cells["colNotes"].Value.ToString()); 
-            }
-
-            return cl; 
+            return mTuneListDGV.Rows; 
         }
 
+        /// <summary>
+        /// Calls the methods in the Excel Writer Helper to write the data in
+        /// the Tune List to an Excel Spreadsheet. 
+        /// </summary>
         public void WriteTuneListToFile()
         {
-            // Test Excel Functionality
-            ExcelWriterHelper.GetInstance().OpenExcelSpreadsheet();
+            string dir = Directory.GetCurrentDirectory();
+            string workbookPath = dir + "\\" + mWorkbookName;
+            
+            ExcelWriterHelper.GetInstance().OpenExcelSpreadsheet(workbookPath);
 
             foreach (DataGridViewRow row in mTuneListDGV.Rows)
             {
