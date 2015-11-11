@@ -200,6 +200,10 @@ namespace DDTuneTrack
             {
                 mTuneListDGV.Rows[mTuneListDGV.SelectedRows[0].Index].Selected = false;
             }
+            else
+            {
+                mAllowSelectionChange = false; 
+            }
         }
 
         /// <summary>
