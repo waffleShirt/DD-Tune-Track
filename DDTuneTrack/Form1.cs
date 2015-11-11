@@ -29,7 +29,7 @@ namespace DDTuneTrack
     {
         private TuneList mTuneList;
         private Mode mMode = Mode.Mode_NewTune;
-        private DateTime mToday = DateTime.Now; 
+        private DateTime mToday = DateTime.Today; 
  
         // Strings for dialog boxes
         private string mSubmitDialogTitle = "Submit all tunes?";
@@ -57,7 +57,7 @@ namespace DDTuneTrack
              * to break and act strangely. This should be fixed properly at a
              * later date
              */
-            if (DateTime.Now.CompareTo(mSeasonEndDate) > 0)
+            if (DateTime.Today.CompareTo(mSeasonEndDate) > 0)
             {
                 DialogResult dialogResult = MessageBox.Show("Double Diamond Tune Track has expired for the 2015/2016 season.", "Double Diamond Tune Track Expired", MessageBoxButtons.OK);
             }
@@ -85,13 +85,13 @@ namespace DDTuneTrack
 
             // Set dateTimePicker min/max dates
             dtpTuneDate.MinDate = mSeasonStartDate;
-            dtpTuneDate.MaxDate = mSeasonEndDate;
+            dtpTuneDate.MaxDate = DateTime.Today;
             dtpChargeListDate.MinDate = mSeasonStartDate;
             dtpChargeListDate.MaxDate = mSeasonEndDate;
             
             // Set the current charge list date to today. If a list already
             // exists for today it will be displayed immediately in the viewer. 
-            dtpChargeListDate.Value = DateTime.Now; 
+            dtpChargeListDate.Value = DateTime.Today; 
         }
 
         //=====================================================================
@@ -229,7 +229,7 @@ namespace DDTuneTrack
         /// <param name="e"></param>
         private void btnGoToToday_Click(object sender, EventArgs e)
         {
-            dtpChargeListDate.Value = DateTime.Now;
+            dtpChargeListDate.Value = DateTime.Today;
             DisplayChargeListForCurrentDate();
 
             btnGoToPrevDay.Enabled = true;
@@ -335,6 +335,7 @@ namespace DDTuneTrack
             {
                 // Submit any remaining tunes and then write out charge list to disk
                 SubmitTuneList();
+
                 ChargeListManager.GetInstance().WriteChargeListsToDisk();
             }
             else
@@ -422,16 +423,17 @@ namespace DDTuneTrack
             if (DateTime.Now.Date.CompareTo(mToday.Date) > 0)
             {
                 Console.WriteLine("Date Changed!");
-                mToday = DateTime.Now;
+                mToday = DateTime.Today;
+
+                // Update date objects
+                UpdateEntryDate();
+                dtpChargeListDate.Value = DateTime.Today;
+                dtpTuneDate.MaxDate = DateTime.Today; 
+                dtpTuneDate.Value = DateTime.Today;
 
                 // Save out the current tune list
                 // Note that as it has passed midnight we want the charge list to be YESTERDAYS date
                 SubmitTuneList(DateTime.Now.AddDays(-1));
-
-                // Update date objects
-                UpdateEntryDate();
-                dtpChargeListDate.Value = DateTime.Now;
-                dtpTuneDate.Value = DateTime.Now;
             }
         }
 
@@ -533,7 +535,7 @@ namespace DDTuneTrack
         /// </summary>
         private void UpdateEntryDate()
         {
-            txtEntryDate.Text = DateTime.Now.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()); 
+            txtEntryDate.Text = DateTime.Today.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()); 
         }
 
         /// <summary>
@@ -545,7 +547,7 @@ namespace DDTuneTrack
         {
             txtAssetNumber.Text = "";
             cmbTuneType.SelectedIndex = -1;
-            dtpTuneDate.Value = DateTime.Now;
+            dtpTuneDate.Value = DateTime.Today;
             UpdateEntryDate();
             cmbStaff.SelectedIndex = -1;
             txtNotes.Text = string.Empty; 
@@ -664,18 +666,23 @@ namespace DDTuneTrack
         /// </summary>
         private void SubmitTuneList()
         {
-            // Write Tunes to File
-            mTuneList.WriteTuneListToFile();
+            // Only submit if there are tunes to submit! Likewise don't build the charge list if we don't need to
+            if (mTuneList.GetNumRows() > 0)
+            {
+                // Write Tunes to File
+                mTuneList.WriteTuneListToFile();
 
-            // Add the new charge list
-            ChargeListManager.GetInstance().AddNewChargeList(ChargeListManager.GetInstance().BuildChargeList(mTuneList));
+                // Add the new charge list
+                ChargeListManager.GetInstance().AddNewChargeList(ChargeListManager.GetInstance().BuildChargeList(mTuneList));
+            }
 
             // Charge list is built. Destroy the DataGridView and clear all data
             ClearInputData();
 
             mTuneList.ClearAllData();
 
-            dtpChargeListDate.Value = DateTime.Now; 
+            dtpChargeListDate.Value = DateTime.Today;
+            DisplayChargeListForCurrentDate(); 
         }
 
         /// <summary>
@@ -688,11 +695,15 @@ namespace DDTuneTrack
         /// <param name="date">Charge List date</param>
         private void SubmitTuneList(DateTime date)
         {
-            // Write Tunes to File
-            mTuneList.WriteTuneListToFile(); 
-            
-            // Add the new charge list
-            ChargeListManager.GetInstance().AddNewChargeList(ChargeListManager.GetInstance().BuildChargeList(mTuneList, date));
+            // Only submit if there are tunes to submit! Likewise don't build the charge list if we don't need to
+            if (mTuneList.GetNumRows() > 0)
+            {
+                // Write Tunes to File
+                mTuneList.WriteTuneListToFile();
+
+                // Add the new charge list
+                ChargeListManager.GetInstance().AddNewChargeList(ChargeListManager.GetInstance().BuildChargeList(mTuneList, date));
+            }
 
             // Charge list is built. Destroy the DataGridView and clear all data
             ClearInputData();
@@ -701,7 +712,7 @@ namespace DDTuneTrack
 
             DisplayChargeListForCurrentDate();
 
-            dtpChargeListDate.Value = DateTime.Now; 
+            dtpChargeListDate.Value = DateTime.Today; 
         }
 
         /// <summary>

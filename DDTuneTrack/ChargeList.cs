@@ -36,7 +36,7 @@ namespace DDTuneTrack
         /// </summary>
         public ChargeList()
         {
-            mListDate = DateTime.Now;
+            mListDate = DateTime.Today;
             mTuneRecords = new List<TuneRecord>();
             mNotes = new List<string>(); 
         }
@@ -181,7 +181,10 @@ namespace DDTuneTrack
             tr.mTuneType = tuneType;
             tr.mCount = 1;
             mTuneRecords.Add(tr);
-            mNotes.Add(notes); 
+            if (notes != string.Empty)
+            {
+                mNotes.Add(notes);
+            }
         }
 
         /// <summary>
