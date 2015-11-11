@@ -39,6 +39,10 @@ namespace DDTuneTrack
         private string mCloseDialogTitle = "Closing";
         private string mCloseDialogDetail = "Are you sure you want to close? Any unsaved tunes will be automatically saved."; 
 
+        // Date time picker min/max dates
+        DateTime mSeasonStartDate = new DateTime(2015, 10, 01);
+        DateTime mSeasonEndDate = new DateTime(2016, 04, 30); 
+
         /// <summary>
         /// Main form constructor
         /// </summary>
@@ -70,6 +74,12 @@ namespace DDTuneTrack
             // Set dateTimePicker date formats
             dtpTuneDate.CustomFormat = CultureHelper.GetInstance().GetDefaultDateFormatString();
             dtpChargeListDate.CustomFormat = CultureHelper.GetInstance().GetDefaultDateFormatString(); 
+
+            // Set dateTimePicker min/max dates
+            dtpTuneDate.MinDate = mSeasonStartDate;
+            dtpTuneDate.MaxDate = mSeasonEndDate;
+            dtpChargeListDate.MinDate = mSeasonStartDate;
+            dtpChargeListDate.MaxDate = mSeasonEndDate; 
         }
 
         //=====================================================================
@@ -183,16 +193,16 @@ namespace DDTuneTrack
         /// <param name="e"></param>
         private void btnPrevDay_Click(object sender, EventArgs e)
         {
-            if (dtpChargeListDate.Value != dtpChargeListDate.MinDate)
+            if (dtpChargeListDate.Value.Date != dtpChargeListDate.MinDate)
             {
-                dtpChargeListDate.Value = dtpChargeListDate.Value.AddDays(-1);
+                dtpChargeListDate.Value = dtpChargeListDate.Value.Date.AddDays(-1);
 
                 // In case next day button has been disabled
                 btnGoToNextDay.Enabled = true; 
             }
 
             // If we're now at the minimum date for the picker disable the prevDay button
-            if (dtpChargeListDate.Value == dtpChargeListDate.MinDate)
+            if (dtpChargeListDate.Value.Date == dtpChargeListDate.MinDate)
             {
                 btnGoToPrevDay.Enabled = false; 
             }
@@ -209,6 +219,9 @@ namespace DDTuneTrack
         {
             dtpChargeListDate.Value = DateTime.Now;
             DisplayChargeListForCurrentDate();
+
+            btnGoToPrevDay.Enabled = true;
+            btnGoToNextDay.Enabled = true; 
         }
 
         /// Handles the Next Day button being pressed in the
@@ -217,16 +230,16 @@ namespace DDTuneTrack
         /// value for Charge Lists isn't already being displayed. 
         private void btnNextDay_Click(object sender, EventArgs e)
         {
-            if (dtpChargeListDate.Value != dtpChargeListDate.MaxDate)
+            if (dtpChargeListDate.Value.Date != dtpChargeListDate.MaxDate)
             {
-                dtpChargeListDate.Value = dtpChargeListDate.Value.AddDays(1);
+                dtpChargeListDate.Value = dtpChargeListDate.Value.Date.AddDays(1);
                 
                 // In case prev day button had been disabled
                 btnGoToPrevDay.Enabled = true; 
             }
 
                 // If we're now at the maximum date for the picker disable the prevDay button
-            if (dtpChargeListDate.Value == dtpChargeListDate.MaxDate)
+            if (dtpChargeListDate.Value.Date == dtpChargeListDate.MaxDate)
             {
                 btnGoToNextDay.Enabled = false; 
             }
