@@ -50,6 +50,18 @@ namespace DDTuneTrack
         {
             InitializeComponent();
 
+            /*
+             * Checks if the current date is equal to or greater than the 
+             * season end date. If it is the user is informed that DDTT has
+             * expired for the season. It will still operate, but it is likely
+             * to break and act strangely. This should be fixed properly at a
+             * later date
+             */
+            if (DateTime.Now.CompareTo(mSeasonEndDate) > 0)
+            {
+                DialogResult dialogResult = MessageBox.Show("Double Diamond Tune Track has expired for the 2015/2016 season.", "Double Diamond Tune Track Expired", MessageBoxButtons.OK);
+            }
+
             // Load tune types from disk
             TuneTypes.LoadTuneTypesList(cmbTuneType);
  
@@ -60,10 +72,6 @@ namespace DDTuneTrack
 
             // Load charge lists from file
             ChargeListManager.GetInstance().LoadChargeLists(); 
-
-            // Set the current charge list date to today. If a list already
-            // exists for today it will be displayed immediately in the viewer. 
-            dtpChargeListDate.Value = DateTime.Now; 
 
             // Make sure the tune entry date is set correctly
             UpdateEntryDate(); 
@@ -79,7 +87,11 @@ namespace DDTuneTrack
             dtpTuneDate.MinDate = mSeasonStartDate;
             dtpTuneDate.MaxDate = mSeasonEndDate;
             dtpChargeListDate.MinDate = mSeasonStartDate;
-            dtpChargeListDate.MaxDate = mSeasonEndDate; 
+            dtpChargeListDate.MaxDate = mSeasonEndDate;
+            
+            // Set the current charge list date to today. If a list already
+            // exists for today it will be displayed immediately in the viewer. 
+            dtpChargeListDate.Value = DateTime.Now; 
         }
 
         //=====================================================================
