@@ -241,7 +241,7 @@
             // dtpTuneDate
             // 
             this.dtpTuneDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpTuneDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpTuneDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpTuneDate.Location = new System.Drawing.Point(163, 85);
             this.dtpTuneDate.MaxDate = new System.DateTime(2016, 4, 30, 0, 0, 0, 0);
             this.dtpTuneDate.MinDate = new System.DateTime(2015, 10, 1, 0, 0, 0, 0);
@@ -382,7 +382,7 @@
             // dtpChargeListDate
             // 
             this.dtpChargeListDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dtpChargeListDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpChargeListDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpChargeListDate.Location = new System.Drawing.Point(75, 14);
             this.dtpChargeListDate.MaxDate = new System.DateTime(2016, 4, 30, 0, 0, 0, 0);
             this.dtpChargeListDate.MinDate = new System.DateTime(2015, 10, 1, 0, 0, 0, 0);

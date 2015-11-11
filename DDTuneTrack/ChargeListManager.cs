@@ -235,7 +235,7 @@ namespace DDTuneTrack
                     while (!sr.EndOfStream)
                     {
                         string dateString = sr.ReadLine();
-                        DateTime date = DateTime.ParseExact(dateString, "d/MM/yyyy", null);
+                        DateTime date = DateTime.ParseExact(dateString, CultureHelper.GetInstance().GetDefaultDateFormatString(), null);
 
                         bool charged = Boolean.Parse(sr.ReadLine());
 

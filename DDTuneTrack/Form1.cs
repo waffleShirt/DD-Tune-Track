@@ -39,6 +39,9 @@ namespace DDTuneTrack
         private string mCloseDialogTitle = "Closing";
         private string mCloseDialogDetail = "Are you sure you want to close? Any unsaved tunes will be automatically saved."; 
 
+        /// <summary>
+        /// Main form constructor
+        /// </summary>
         public DDTuneTrackForm()
         {
             InitializeComponent();
@@ -63,6 +66,10 @@ namespace DDTuneTrack
 
             // Ensure the charged button in the charge list tab has the right text
             UpdateChargedButtonText();
+
+            // Set dateTimePicker date formats
+            dtpTuneDate.CustomFormat = CultureHelper.GetInstance().GetDefaultDateFormatString();
+            dtpChargeListDate.CustomFormat = CultureHelper.GetInstance().GetDefaultDateFormatString(); 
         }
 
         //=====================================================================
@@ -438,7 +445,7 @@ namespace DDTuneTrack
             if (ValidateInput())
             {
                 // Save Row To Data Grid View
-                mTuneList.AddNewTune(txtAssetNumber.Text, cmbTuneType.SelectedItem.ToString(), dtpTuneDate.Value.ToShortDateString(), txtEntryDate.Text, cmbStaff.SelectedItem.ToString(), txtNotes.Text);
+                mTuneList.AddNewTune(txtAssetNumber.Text, cmbTuneType.SelectedItem.ToString(), dtpTuneDate.Value.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()), txtEntryDate.Text, cmbStaff.SelectedItem.ToString(), txtNotes.Text);
                 
                 ClearInputOnSaveOrUpdate();
 
@@ -616,7 +623,7 @@ namespace DDTuneTrack
                 // Populate the input data with the values from the row
                 txtAssetNumber.Text = row.Cells["colAssetNumber"].Value.ToString();
                 cmbTuneType.SelectedIndex = cmbTuneType.FindStringExact(row.Cells["colTuneType"].Value.ToString());
-                dtpTuneDate.Value = DateTime.ParseExact(row.Cells["colTuneDate"].Value.ToString(), "d/MM/yyyy", null);
+                dtpTuneDate.Value = DateTime.ParseExact(row.Cells["colTuneDate"].Value.ToString(), CultureHelper.GetInstance().GetDefaultDateFormatString(), null);
                 cmbStaff.SelectedIndex = cmbStaff.FindStringExact(row.Cells["colStaff"].Value.ToString());
                 txtNotes.Text = row.Cells["colNotes"].Value.ToString(); 
             }

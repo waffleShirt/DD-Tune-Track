@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="ChargeList.cs" />
     <Compile Include="ChargeListManager.cs" />
+    <Compile Include="CultureHelper.cs" />
     <Compile Include="ExcelWriterHelper.cs" />
     <Compile Include="TuneList.cs" />
     <Compile Include="Form1.cs">
