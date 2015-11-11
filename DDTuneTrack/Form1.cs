@@ -475,7 +475,7 @@ namespace DDTuneTrack
             if (ValidateInput())
             {
                 // Update existing row
-                mTuneList.UpdateExistingTune(txtAssetNumber.Text, cmbTuneType.SelectedItem.ToString(), dtpTuneDate.Value.ToShortDateString(), txtEntryDate.Text, cmbStaff.SelectedItem.ToString(), txtNotes.Text);
+                mTuneList.UpdateExistingTune(txtAssetNumber.Text, cmbTuneType.SelectedItem.ToString(), dtpTuneDate.Value.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()), txtEntryDate.Text, cmbStaff.SelectedItem.ToString(), txtNotes.Text);
 
                 ClearInputOnSaveOrUpdate();     // !!!! May not be the right option, perhaps better to clear all data on update? 
 
@@ -504,7 +504,7 @@ namespace DDTuneTrack
         /// </summary>
         private void UpdateEntryDate()
         {
-            txtEntryDate.Text = DateTime.Now.ToShortDateString(); 
+            txtEntryDate.Text = DateTime.Now.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()); 
         }
 
         /// <summary>

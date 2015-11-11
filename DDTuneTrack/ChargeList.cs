@@ -192,7 +192,7 @@ namespace DDTuneTrack
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Charge List Date: " + mListDate.ToShortDateString());
+            sb.Append("Charge List Date: " + mListDate.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()));
             sb.AppendLine(); 
             foreach (TuneRecord tr in mTuneRecords)
             {

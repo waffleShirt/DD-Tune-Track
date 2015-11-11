@@ -85,7 +85,7 @@ namespace DDTuneTrack
                 }
             }
 
-            return "No charge list found for " + date.ToShortDateString(); 
+            return "No charge list found for " + date.ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()); 
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace DDTuneTrack
                 {
                     foreach (ChargeList cl in mChargeLists)
                     {
-                        sw.WriteLine(cl.GetDate().ToShortDateString());
+                        sw.WriteLine(cl.GetDate().ToString(CultureHelper.GetInstance().GetDefaultDateFormatString()));
                         sw.WriteLine(cl.GetCharged().ToString());
 
                         List<ChargeList.TuneRecord> tuneRecords = cl.GetTuneRecords();
