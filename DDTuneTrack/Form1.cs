@@ -256,15 +256,19 @@ namespace DDTuneTrack
         /// <param name="e"></param>
         private void dtpChargeListDate_ValueChanged(object sender, EventArgs e)
         {
-            if (dtpChargeListDate.Value == dtpChargeListDate.MinDate)
+            if (dtpChargeListDate.Value.Date == dtpChargeListDate.MinDate)
             {
                 btnGoToPrevDay.Enabled = false;
                 btnGoToNextDay.Enabled = true;
             }
-
-            if (dtpChargeListDate.Value == dtpChargeListDate.MaxDate)
+            else if (dtpChargeListDate.Value.Date == dtpChargeListDate.MaxDate)
             {
                 btnGoToNextDay.Enabled = false;
+                btnGoToPrevDay.Enabled = true;
+            }
+            else
+            {
+                btnGoToNextDay.Enabled = true;
                 btnGoToPrevDay.Enabled = true;
             }
 
