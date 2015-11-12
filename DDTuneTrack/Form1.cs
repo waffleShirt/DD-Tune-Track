@@ -274,6 +274,7 @@ namespace DDTuneTrack
         private void dgv_SelectionChanged(object sender, EventArgs e)
         {
             OnTuneListRowSelectionChanged();
+            HideValidationLabels();
         }
 
         /// <summary>

@@ -19,7 +19,6 @@ namespace DDTuneTrack
     {
         private DDTuneTrackForm mAppForm; 
         private DataGridView mTuneListDGV;
-        private int mNumRows = 0;
         private bool mAllowSelectionChange = false;
         private Point mLocation = new Point(6, 278);
         private System.Drawing.Size mSize = new System.Drawing.Size(734, 197); 
@@ -83,22 +82,7 @@ namespace DDTuneTrack
         public void ClearAllData()
         {
             mTuneListDGV.Rows.Clear();
-            mNumRows = 0;
             mAllowSelectionChange = false; 
-        }
-
-        /// <summary>
-        /// Adds an empty row to the DataGridView. 
-        /// </summary>
-        /// <returns></returns>
-        private DataGridViewRow AddEmptyRow()
-        {
-            DataGridViewRow row = new DataGridViewRow();
-            row.HeaderCell.Value = mNumRows.ToString();
-            mTuneListDGV.Rows.Add(row);
-            ++mNumRows;
-
-            return row; 
         }
 
         /// <summary>
@@ -171,13 +155,11 @@ namespace DDTuneTrack
             DataGridViewRow row = new DataGridViewRow();
             row.CreateCells(mTuneListDGV); 
             bool rowSet = row.SetValues(assetNumber, tuneType, tuneDate, entryDate, staffMember, notes);
-            row.HeaderCell.Value = mNumRows.ToString();
+            row.HeaderCell.Value = (1 + mTuneListDGV.Rows.Count).ToString() ;
             mTuneListDGV.Rows.Add(row);
 
-            ++mNumRows;
-
             // The first entered row will be selected, we dont want this to happen. 
-            if (mNumRows == 1)
+            if (mTuneListDGV.Rows.Count == 1)
             {
                 mTuneListDGV.Rows[0].Selected = false;
                 
@@ -213,11 +195,8 @@ namespace DDTuneTrack
             // Remove row
             mTuneListDGV.Rows.RemoveAt(mTuneListDGV.SelectedRows[0].Index);
 
-            // Decrease row count
-            --mNumRows; 
-
             // Deselect row
-            if (mNumRows > 0)
+            if (mTuneListDGV.Rows.Count > 0)
             {
                 mTuneListDGV.Rows[mTuneListDGV.SelectedRows[0].Index].Selected = false;
             }
@@ -250,7 +229,7 @@ namespace DDTuneTrack
         /// <returns>Number of rows in the tune list.</returns>
         public int GetNumRows()
         {
-            return mNumRows;
+            return mTuneListDGV.Rows.Count;
         }
 
         /// <summary>
